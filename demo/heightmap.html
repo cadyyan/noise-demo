@@ -105,13 +105,29 @@
 		}).resize();
 
 		$('#generate').click(function () {
+			var persistence = $('#persistence').val();
+			if (persistence == '') {
+				persistence = 1;
+			}
+			else {
+				persistence = parseFloat(persistence);
+			}
+
+			var octaves = $('#octaves').val();
+			if (octaves == '') {
+				octaves = 1;
+			}
+			else {
+				octaves = parseInt(octaves);
+			}
+
 			var seed = $('#seed').val();
 			if (seed == '') {
 				seed = new Date().getTime().toString();
 			}
 
-			var generator = new PerlinNoiseGenerator2D();
-			generator.init(seed);
+			var generator = new PerlinNoiseOctaveGenerator(new PerlinNoiseGenerator2D());
+			generator.init(seed, persistence, octaves);
 
 			var canvas       = $('#content canvas');
 			var canvasWidth  = canvas.width();

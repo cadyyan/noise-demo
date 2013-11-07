@@ -78,3 +78,30 @@ function PerlinNoiseGenerator2D() {
 	};
 }
 
+function PerlinNoiseOctaveGenerator(generator) {
+	this.generator = generator;
+
+	this.init = function (seed, persistence, octaves) {
+		this.persistence = persistence;
+		this.octaves     = octaves;
+
+		this.generator.init(seed);
+	};
+
+	this.noise = function () {
+		var noise = 0;
+		for (var octave = 0; octave != this.octaves; octave++) {
+			var frequency = Math.pow(2, octave);
+			var amplitude = Math.pow(this.persistence, octave);
+
+			for (var i = 0; i != arguments.length; i++) {
+				arguments[i] *= frequency;
+			}
+
+			noise += this.generator.noise.apply(this.generator, arguments) * amplitude;
+		}
+
+		return noise;
+	};
+}
+
