@@ -91,11 +91,10 @@ function PerlinNoiseOctaveGenerator(generator) {
 	this.noise = function () {
 		var noise = 0;
 		for (var octave = 0; octave != this.octaves; octave++) {
-			var frequency = Math.pow(2, octave);
 			var amplitude = Math.pow(this.persistence, octave);
 
 			for (var i = 0; i != arguments.length; i++) {
-				arguments[i] *= frequency;
+				arguments[i] *= 2;
 			}
 
 			noise += this.generator.noise.apply(this.generator, arguments) * amplitude;
