@@ -1,0 +1,147 @@
+<html>
+	<head>
+		<meta charset="UTF-8" />
+
+		<title>Height Map Demo</title>
+
+		<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<script type="text/javascript" src="../js/seedrandom-min.js"></script>
+		<script type="text/javascript" src="../js/perlin.js"></script>
+
+		<style>
+			body
+			{
+				margin: 0px;
+			}
+
+			#content
+			{
+				float: left;
+			}
+
+			#content canvas
+			{
+			}
+
+			#controls
+			{
+				border-left: 1px solid #AAAAAA;
+				float: right;
+				padding: 0.5em;
+				width: 200px;
+			}
+
+			#controls label
+			{
+				display: block;
+			}
+
+			#controls label:not(:first-child)
+			{
+				margin-top: 0.4em;
+			}
+
+			#controls input[type=text], #controls select
+			{
+				padding: 0.2em;
+				width: 100%;
+			}
+
+			#controls input[type=checkbox]
+			{
+				position: relative;
+				bottom: -1px;
+			}
+
+			#controls button
+			{
+				padding: 0.2em;
+				width: 100%;
+			}
+
+			#controls #generate
+			{
+				margin-top: 1em;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="content">
+			<canvas>
+			</canvas>
+		</div>
+		<div id="controls">
+			<label>Persistence</label>
+			<input id="persistence" type="text" />
+			<label>Octaves</label>
+			<input id="octaves" type="text" />
+			<label><input id="smooth" type="checkbox" /> Smooth</label>
+			<label>Interpolation</label>
+			<select id="interpolation">
+				<option value="linear" selected="selected">Linear</option>
+				<option value="cosine">Cosine</option>
+				<option value="cubic">Cubic</option>
+			</select>
+			<label>Seed</label>
+			<input id="seed" type="text" />
+			<button id="generate">Generate Noise</button>
+		</div>
+	</body>
+
+	<script type="text/javascript">
+		$(window).resize(function () {
+			var body   = $('body');
+			var height = body.height();
+			var width  = body.width();
+
+			var content  = $('#content');
+			var controls = $('#controls');
+
+			content.height(height);
+			content.width(width - controls.outerWidth(false));
+			content.children('canvas').attr('height', height).attr('width', content.width());
+
+			controls.height(height - 16);
+		}).resize();
+
+		$('#generate').click(function () {
+			var seed = $('#seed').val();
+			if (seed == '') {
+				seed = new Date().getTime().toString();
+			}
+
+			var generator = new PerlinNoiseGenerator2D();
+			generator.init(seed);
+
+			var canvas       = $('#content canvas');
+			var canvasWidth  = canvas.width();
+			var canvasHeight = canvas.height();
+			var ctx          = canvas[0].getContext('2d');
+			var imageData    = ctx.createImageData(canvasWidth, canvasHeight);
+			var pixels       = imageData.data;
+
+			var chunkSize = 16;
+
+			for (var y = 0; y != canvasHeight; y++) {
+				var ay = (canvasHeight - y) / chunkSize;
+				for (var x = 0; x != canvasWidth; x++) {
+					var ax = x / chunkSize;
+
+					var index = (y * canvasWidth + x) * 4;
+
+					var noise = generator.noise(ax, ay);
+					var color = 128 + 128 * noise;
+
+					pixels[index]     = color;
+					pixels[index + 1] = color;
+					pixels[index + 2] = color;
+					pixels[index + 3] = 255;
+				}
+			}
+
+			//ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+			ctx.putImageData(imageData, 0, 0);
+		});
+	</script>
+</html>
+

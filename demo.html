@@ -1,0 +1,62 @@
+<html>
+	<head>
+		<meta charset="UTF-8" />
+
+		<title>Noise Demo</title>
+
+		<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
+		<style>
+			body
+			{
+				margin: 1em;
+			}
+
+			#content
+			{
+				border: 1px solid #AAAAAA;
+				margin: 0px auto;
+				min-width: 720px;
+			}
+
+			#content #header
+			{
+				background-color: #CCCCCC;
+				border-bottom: 1px solid #AAAAAA;
+				padding: 0.25em;
+			}
+
+			#content #header #demo-select
+			{
+				font-size: 1.1em;
+				padding: 0.2em;
+			}
+
+			#content #demo
+			{
+				border: none;
+				display: block;
+				min-height: 500px;
+				width: 100%;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="content">
+			<div id="header">
+				<select id="demo-select">
+					<option value="heightmap.html" selected="selected">Height Map</option>
+				</select>
+			</div>
+			<iframe id="demo">
+			</iframe>
+		</div>
+
+		<script type="text/javascript">
+			$('#demo-select').change(function () {
+				$('#demo').attr('src', 'demo/' + $('#demo-select option:selected').attr('value'));
+			}).change();
+		</script>
+	</body>
+</html>
+
