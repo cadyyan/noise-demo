@@ -1,0 +1,131 @@
+<html>
+	<head>
+		<meta charset="UTF-8" />
+
+		<title>1D Perlin Noise Demo</title>
+
+		<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<script type="text/javascript" src="../js/seedrandom-min.js"></script>
+		<script type="text/javascript" src="../js/jquery.ba-resize.min.js"></script>
+		<!--[if lte IE 8]></script language="javascript" type="text/javascript" src="../js/excanvas.min.js"></script><![endif]-->
+		<script type="text/javascript" src="../js/jquery.flot.min.js"></script>
+		<script type="text/javascript" src="../js/jquery.flot.resize.min.js"></script>
+		<script type="text/javascript" src="../js/curvedLines.js"></script>
+		<script type="text/javascript" src="../js/perlin.js"></script>
+
+		<style>
+			body
+			{
+				margin: 0px;
+			}
+
+			#content
+			{
+				float: left;
+			}
+
+			#controls
+			{
+				border-left: 1px solid #AAAAAA;
+				float: right;
+				padding: 0.5em;
+				width: 200px;
+			}
+
+			#controls label
+			{
+				display: block;
+			}
+
+			#controls label:not(:first-child)
+			{
+				margin-top: 0.4em;
+			}
+
+			#controls input[type=text], #controls select
+			{
+				padding: 0.2em;
+				width: 100%;
+			}
+
+			#controls button
+			{
+				padding: 0.2em;
+				width: 100%;
+			}
+
+			#controls #generate
+			{
+				margin-top: 1em;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="content">
+		</div>
+		<div id="controls">
+			<label>Seed</label>
+			<input id="seed" type="text" />
+			<label>Range</label>
+			<input id="range" type="text" />
+			<button id="generate">Generate Noise</button>
+		</div>
+
+		<script type="text/javascript">
+			$(window).resize(function () {
+				var body   = $('body');
+				var height = body.height();
+				var width  = body.width();
+
+				var content  = $('#content');
+				var controls = $('#controls');
+
+				content.height(height);
+				content.width(width - controls.outerWidth(false));
+				content.children('canvas').attr('height', height).attr('width', content.width());
+
+				controls.height(height - 16);
+			}).resize();
+
+			$('#generate').click(function () {
+				var seed = $('#seed').val();
+				if (seed == '') {
+					seed = new Date().getTime().toString();
+				}
+
+				var range = $('#range').val();
+				if (range == '') {
+					range = 10;
+				}
+				else {
+					range = parseFloat(range);
+				}
+
+				var canvas = $('#content');
+
+				var generator = new PerlinNoiseGenerator1D();
+				generator.init(seed);
+
+				var points  = 20;
+				var spacing = range / points;
+				var data    = [];
+				for (var i = 0; i != points; i++) {
+					var x = i * spacing;
+					data.push([x, generator.noise(x)]);
+				}
+
+				canvas.plot(
+					[{ color: 'red', curvedLines: { apply: true }, data: data }],
+					{
+						series: {
+							curvedLines: { active: true },
+							lines: { show: true },
+							points: { show: true }
+						}
+					}
+				);
+			});
+		</script>
+	</body>
+</html>
+

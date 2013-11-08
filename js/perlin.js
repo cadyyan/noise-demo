@@ -17,6 +17,58 @@ function GradientVector2D(x, y) {
 	this.normalize();
 }
 
+function PerlinNoiseGenerator1D() {
+	this.permutations = [];
+	this.gradients    = [];
+
+	this.init = function (seed) {
+		Math.seedrandom(seed);
+
+		this.permutations = [];
+		this.gradients    = [];
+
+		for (var i = 0; i != 512; i++) {
+			this.permutations.push(i & 255);
+
+			this.gradients.push((RandInt(512) - 256) / 256.0);
+		}
+
+		for (var i = 0; i != 512; i++) {
+			var index = RandInt(512);
+
+			var t = this.permutations[i];
+			this.permutations[i]     = this.permutations[index];
+			this.permutations[index] = t;
+		}
+	}
+
+	this.fade = function (t) {
+		return t * t * t * (t * (t * 6 - 15) + 10);
+	};
+
+	this.gradient = function (hash, x) {
+		var gradient = this.gradients[hash];
+		return gradient * x;
+	};
+
+	this.linearInterpolation = function (t, a, b) {
+		return a + t * (b - a);
+	};
+
+	this.noise = function (x) {
+		var X = Math.floor(x) & 255;
+
+		x -= Math.floor(x);
+
+		var u = this.fade(x);
+
+		var p0 = this.permutations[X];
+		var p1 = this.permutations[X + 1];
+
+		return this.linearInterpolation(u, this.gradient(p0, x), this.gradient(p1, x - 1));
+	};
+}
+
 function PerlinNoiseGenerator2D() {
 	this.permutations = [];
 	this.gradients    = [];
@@ -39,7 +91,7 @@ function PerlinNoiseGenerator2D() {
 			var index = RandInt(512);
 
 			var t = this.permutations[i];
-			this.permutations[i] = this.permutations[index];
+			this.permutations[i]     = this.permutations[index];
 			this.permutations[index] = t;
 		}
 	};
