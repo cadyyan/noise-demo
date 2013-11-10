@@ -61,6 +61,8 @@
 			</canvas>
 		</div>
 		<div id="controls">
+			<label>Resolution</label>
+			<input id="resolution" type="text" />
 			<label>Persistence</label>
 			<input id="persistence" type="text" />
 			<label>Octaves</label>
@@ -94,6 +96,14 @@
 		}).resize();
 
 		$('#generate').click(function () {
+			var resolution = $('#resolution').val();
+			if (resolution == '') {
+				resolution = 16;
+			}
+			else {
+				resolution = parseInt(resolution);
+			}
+
 			var persistence = $('#persistence').val();
 			if (persistence == '') {
 				persistence = 1;
@@ -125,12 +135,10 @@
 			var imageData    = ctx.createImageData(canvasWidth, canvasHeight);
 			var pixels       = imageData.data;
 
-			var chunkSize = 16;
-
 			for (var y = 0; y != canvasHeight; y++) {
-				var ay = (canvasHeight - y) / chunkSize;
+				var ay = (canvasHeight - y) / resolution;
 				for (var x = 0; x != canvasWidth; x++) {
-					var ax = x / chunkSize;
+					var ax = x / resolution;
 
 					var index = (y * canvasWidth + x) * 4;
 
