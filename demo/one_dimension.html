@@ -22,12 +22,15 @@
 			#content
 			{
 				float: left;
+				height: 100%;
+				width: 488px;
 			}
 
 			#controls
 			{
 				border-left: 1px solid #AAAAAA;
 				float: right;
+				height: 538px;
 				padding: 0.5em;
 				width: 200px;
 			}
@@ -72,21 +75,6 @@
 		</div>
 
 		<script type="text/javascript">
-			$(window).resize(function () {
-				var body   = $('body');
-				var height = body.height();
-				var width  = body.width();
-
-				var content  = $('#content');
-				var controls = $('#controls');
-
-				content.height(height);
-				content.width(width - controls.outerWidth(false));
-				content.children('canvas').attr('height', height).attr('width', content.width());
-
-				controls.height(height - 16);
-			}).resize();
-
 			$('#generate').click(function () {
 				var seed = $('#seed').val();
 				if (seed == '') {
