@@ -11,7 +11,6 @@
 		<script type="text/javascript" src="../js/jquery.flot.min.js"></script>
 		<script type="text/javascript" src="../js/jquery.flot.resize.min.js"></script>
 		<script type="text/javascript" src="../js/curvedLines.js"></script>
-		<script type="text/javascript" src="../js/perlin.js"></script>
 
 		<style>
 			body
@@ -91,15 +90,14 @@
 
 				var canvas = $('#content');
 
-				var generator = new PerlinNoiseGenerator1D();
-				generator.init(seed);
+				Math.seedrandom(seed);
 
 				var points  = 20;
 				var spacing = range / points;
 				var data    = [];
 				for (var i = 0; i != points; i++) {
 					var x = i * spacing;
-					data.push([x, generator.noise(x)]);
+					data.push([x, Math.random()]);
 				}
 
 				canvas.plot(
